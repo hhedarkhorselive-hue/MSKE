@@ -1,0 +1,6 @@
+{
+  "name": "MSKE Shipping",
+  "description": "MSKE is a premium shipping and marine cargo fleet investment platform focusing on stable cargo vessel yields and secured operator accounts.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
