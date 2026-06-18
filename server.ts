@@ -146,6 +146,53 @@ function getSmartFallbackResponse(lastMessage: string): string {
     }
   });
 
+  // Gmail withdraw notification
+  app.post("/api/withdraw-notification", async (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) return res.status(401).send("Unauthorized");
+
+    try {
+      const { number, amount, method } = req.body;
+      const messageContent = [
+        "Content-Type: text/plain; charset=\"UTF-8\"\n",
+        "MIME-Version: 1.0\n",
+        "Content-Transfer-Encoding: 7bit\n",
+        `To: hhedarkhorselive@gmail.com\n`,
+        `Subject: New Withdrawal Request - MSKE Platform\n\n`,
+        `A new withdrawal request has been received:\n\n`,
+        `Method: ${method}\n`,
+        `Number: ${number}\n`,
+        `Amount: ${amount} Taka\n`
+      ].join("");
+
+      const rawMessage = Buffer.from(messageContent)
+        .toString("base64")
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+
+      const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ raw: rawMessage })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Gmail API Error:", errorData);
+        throw new Error(errorData.error?.message || "Failed to send email");
+      }
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      res.status(500).send("Failed to send email");
+    }
+  });
+
   // Secure Image Proxy to bypass Hotlinking Prevention (such as pasteboard.co / postimage.org)
   app.get("/api/image-proxy", async (req, res) => {
     const rawUrl = req.query.url as string;

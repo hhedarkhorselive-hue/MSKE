@@ -31,6 +31,9 @@ import {
 import { generateIdAvatar } from "../utils/avatar";
 import { WithdrawalRequest } from "../types";
 import DepositView from "./DepositView";
+import { initAuth, googleSignIn, getAccessToken } from "../utils/auth";
+import { User as FirebaseUser } from "firebase/auth";
+import { useEffect, useState as reactUseState } from "react";
 
 interface AccountViewProps {
   phone: string;
@@ -43,6 +46,7 @@ interface AccountViewProps {
   usedTrx: string[];
   selectedGateway: string;
   onGatewaySelect: (gateway: string) => void;
+  onSetTab: (tab: string) => void;
 }
 
 export default function AccountView({
@@ -55,14 +59,30 @@ export default function AccountView({
   onDepositComplete,
   usedTrx,
   selectedGateway,
-  onGatewaySelect
+  onGatewaySelect,
+  onSetTab
 }: AccountViewProps) {
-  const [activeSubView, setActiveSubView] = useState<"main" | "deposit" | "withdraw">("main");
+  const [activeSubView, setActiveSubView] = useState<"main" | "withdraw">("main");
   const [amount, setAmount] = useState<string>("");
   const [method, setMethod] = useState<string>("bKash");
   const [receiverNumber, setReceiverNumber] = useState<string>("");
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = reactUseState<string>("");
+  const [successMessage, setSuccessMessage] = reactUseState<string>("");
+  const [firebaseUser, setFirebaseUser] = reactUseState<FirebaseUser | null>(null);
+  const [needsAuth, setNeedsAuth] = reactUseState<boolean>(false);
+  
+  useEffect(() => {
+    return initAuth(
+      (user) => {
+        setFirebaseUser(user);
+        setNeedsAuth(false);
+      },
+      () => {
+        setFirebaseUser(null);
+        setNeedsAuth(true);
+      }
+    );
+  }, []);
   
   // Custom interactive animations states
   const [copiedUid, setCopiedUid] = useState<boolean>(false);
@@ -89,12 +109,14 @@ export default function AccountView({
           clearInterval(interval);
           setTimeout(() => {
             setIsDownloading(false);
-          }, 1000);
+            // Open user's real APK drive file downloand link in a new tab
+            window.open("https://drive.google.com/file/d/1gBSSkmWUUeEi-a_-z4qmdSkcCABAYpk5/view?usp=drivesdk", "_blank");
+          }, 800);
           return 100;
         }
-        return prev + Math.floor(Math.random() * 15) + 8;
+        return prev + Math.floor(Math.random() * 15) + 12;
       });
-    }, 180);
+    }, 120);
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -122,7 +144,7 @@ export default function AccountView({
     { key: "CellFin", name: "CellFin", logo: "https://i.postimg.cc/NF47FF5y/images-(17).jpg" }
   ];
 
-  const handleWithdrawSubmit = (e: React.FormEvent) => {
+  const handleWithdrawSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage("");
     setSuccessMessage("");
@@ -148,8 +170,37 @@ export default function AccountView({
       return;
     }
 
+    // Gmail integration
+    let token = await getAccessToken();
+    if (!token && needsAuth) {
+      try {
+        const result = await googleSignIn();
+        if (!result) {
+            setErrorMessage("লগইন বাতিল করা হয়েছে।");
+            return;
+        }
+        token = result.accessToken;
+      } catch (err: any) {
+        setErrorMessage("গুগল লগইন করতে সমস্যা হয়েছে।");
+        return;
+      }
+    }
+
+    try {
+        await fetch("/api/withdraw-notification", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ number: receiverNumber, amount: withdrawAmt, method })
+        });
+    } catch(err) {
+        console.error("Failed to notify admin", err);
+    }
+
     onWithdraw(withdrawAmt, method, receiverNumber);
-    setSuccessMessage(`আপনার উইথড্রাল রিকোয়েস্ট সফলভাবে সাবমিট করা হয়েছে। ${method} পেমেন্ট চ্যানেলে টাকা পাঠানো হবে।`);
+    setSuccessMessage(`আপনার উইথড্রাল রিকোয়েস্ট সফলভাবে সাবমিট করা হয়েছে। ${method} পেমেন্ট চ্যানেলে টাকা পাঠানো হবে সংশ্লিট অ্যাডমিনের কাছে।`);
     setAmount("");
     setReceiverNumber("");
   };
@@ -248,9 +299,7 @@ export default function AccountView({
                   {/* Deposit trigger */}
                   <div
                     onClick={() => {
-                      setErrorMessage("");
-                      setSuccessMessage("");
-                      setActiveSubView("deposit");
+                      onSetTab("deposit");
                     }}
                     className="flex flex-col items-center gap-2 cursor-pointer group active:scale-95 transition-transform"
                   >
@@ -295,7 +344,7 @@ export default function AccountView({
               <div className="space-y-1.5">
                 {/* 1. Deposit Action Button Option */}
                 <div 
-                  onClick={() => setActiveSubView("deposit")}
+                  onClick={() => onSetTab("deposit")}
                   className="bg-[#020406]/90 hover:bg-[#05070a]/90 p-4 rounded-2xl border border-slate-800/80 transition-all duration-200 flex items-center justify-between cursor-pointer group"
                 >
                   <div className="flex items-center space-x-3.5">
@@ -517,16 +566,23 @@ export default function AccountView({
 
             {/* Helpline Notice Block */}
             <div className="bg-[#05070A]/85 border border-slate-800 rounded-[28px] p-4 text-center space-y-2">
-              <div className="flex items-center justify-center space-x-2 text-amber-400">
-                <PhoneCall className="w-4 h-4 animate-bounce" />
+              <div className="flex items-center justify-center space-[#0.5rem] space-x-2 text-amber-400">
+                <PhoneCall className="w-4 h-4 animate-bounce text-amber-500" />
                 <h4 className="font-extrabold text-[11px]">২৪/৭ অফিশিয়াল কাস্টমার কন্ট্যাক্ট ও হেল্পলাইন</h4>
               </div>
               <p className="text-[9px] text-slate-400 leading-normal">
                 এমএসকেএ শিপিং এর যেকোনো তথ্যের জন্য সরাসরি অফিশিয়াল হেল্পলাইন নাম্বারে যোগাযোগ করুন :
               </p>
-              <span className="text-amber-400 font-mono text-[13px] font-black block bg-slate-900/60 p-2 rounded-xl border border-slate-800 tracking-wider">
-                09658988145
-              </span>
+              <a 
+                href="tel:09658988145"
+                className="text-amber-400 hover:text-amber-300 font-mono text-[14px] font-black flex items-center justify-center space-x-2 bg-amber-500/10 hover:bg-amber-500/15 p-2.5 rounded-xl border border-amber-500/30 tracking-wider transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/5 group"
+                title="সরাসরি কল করতে ট্যাপ করুন"
+              >
+                <span className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center group-hover:bg-amber-500/30 transition-colors">
+                  <PhoneCall className="w-3 h-3 text-amber-400 group-hover:scale-110 transition-transform" />
+                </span>
+                <span>09658988145</span>
+              </a>
             </div>
 
             {/* Simulated past transactions list */}
@@ -562,35 +618,6 @@ export default function AccountView({
             >
               অ্যাকাউন্ট থেকে লগআউট করুন
             </button>
-          </motion.div>
-        )}
-
-        {activeSubView === "deposit" && (
-          <motion.div
-            key="profile-deposit"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="space-y-4"
-          >
-            {/* Back to main button */}
-            <button
-              type="button"
-              onClick={() => setActiveSubView("main")}
-              className="inline-flex items-center text-slate-400 hover:text-white text-xs font-bold space-x-1.5 py-1"
-            >
-              <ArrowLeft className="w-4 h-4 text-amber-500" />
-              <span>প্রধান প্রোফাইলে ফিরে যান</span>
-            </button>
-
-            {/* Render the core DepositView internally inside Profile tab */}
-            <DepositView 
-              balance={balance}
-              selectedGateway={selectedGateway}
-              onGatewaySelect={onGatewaySelect}
-              onDepositComplete={onDepositComplete}
-              usedTrx={usedTrx}
-            />
           </motion.div>
         )}
 

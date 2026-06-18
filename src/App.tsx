@@ -5,7 +5,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Compass, Coins, Sparkles, Users, User, ShieldAlert, Bot, HelpCircle, Anchor, Ship } from "lucide-react";
+import { Compass, Coins, Sparkles, Users, User, ShieldAlert, Bot, HelpCircle, Anchor, Ship, Gift } from "lucide-react";
 
 import { UserSession, WithdrawalRequest, DepositRequest } from "./types";
 import SetupModal from "./components/SetupModal";
@@ -41,6 +41,7 @@ export default function App() {
   const [globalBanner, setGlobalBanner] = useState<string>("");
   const [showSplash, setShowSplash] = useState<boolean>(true);
   const [splashProgress, setSplashProgress] = useState<number>(0);
+  const [showBonusModal, setShowBonusModal] = useState<boolean>(false);
 
   // Splash countdown simulated loading progress timer
   useEffect(() => {
@@ -137,6 +138,7 @@ export default function App() {
       usersList.push(newSession);
       localStorage.setItem("mske_registered_users", JSON.stringify(usersList));
       updateSession(newSession);
+      setShowBonusModal(true);
       showBanner(`রেজিস্ট্রেশন সফল! আপনার ওয়ালেটে ৳১০০ জয়েনিং বোনাস জমা করা হয়েছে।`);
     } else {
       if (!matchedUser) {
@@ -286,6 +288,16 @@ export default function App() {
         );
       case "refer":
         return <ReferView uid={session.uid} />;
+      case "deposit":
+        return (
+          <DepositView
+            balance={session.balance}
+            selectedGateway={session.selectedGateway || "bKash"}
+            onGatewaySelect={(gw) => updateSession({ ...session, selectedGateway: gw })}
+            onDepositComplete={handleDepositComplete}
+            usedTrx={session.usedTrx}
+          />
+        );
       case "account":
         return (
           <AccountView
@@ -299,6 +311,7 @@ export default function App() {
             usedTrx={session.usedTrx}
             selectedGateway={session.selectedGateway || "bKash"}
             onGatewaySelect={(gw) => updateSession({ ...session, selectedGateway: gw })}
+            onSetTab={setTab}
           />
         );
       default:
@@ -334,52 +347,74 @@ export default function App() {
             transition={{ duration: 0.6 }}
             className="relative"
           >
+            {/* Third ultra-soft outermost deep pulse ring */}
+            <motion.div 
+              animate={{ scale: [0.95, 1.35, 0.95], opacity: [0.1, 0.25, 0.1] }}
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+              className="absolute -inset-10 rounded-full border border-amber-500/10 pointer-events-none"
+            />
             {/* Elegant outer spinning ring of gold dashes */}
             <motion.div 
               animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 10, ease: "linear" }}
-              className="absolute -inset-6 rounded-full border border-dashed border-amber-500/40"
+              transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
+              className="absolute -inset-6 rounded-full border border-dashed border-amber-500/50"
             />
             {/* Inter rotating reverse slow accent ring */}
             <motion.div 
               animate={{ rotate: -360 }}
-              transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-              className="absolute -inset-4 rounded-full border border-double border-indigo-400/20"
+              transition={{ repeat: Infinity, duration: 12, ease: "linear" }}
+              className="absolute -inset-4 rounded-full border border-double border-indigo-400/30"
             />
             {/* Soft background pulse radial gradient */}
             <motion.div 
-              animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
-              transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="absolute -inset-3 rounded-full bg-gradient-to-tr from-indigo-500 to-amber-500 opacity-25 blur-xl"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.25, 0.45, 0.25] }}
+              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
+              className="absolute -inset-3 rounded-full bg-gradient-to-tr from-indigo-500 via-amber-500 to-yellow-500 opacity-30 blur-xl"
             />
             
+            {/* Orbiting golden dots for dynamic loading visual flare */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 4, ease: "linear" }}
+              className="absolute inset-0 z-20 pointer-events-none"
+            >
+              <div className="absolute top-[-26px] left-[54px] w-3 h-3 bg-gradient-to-tr from-amber-400 to-yellow-300 rounded-full shadow-[0_0_8px_rgba(245,158,11,0.8)]"></div>
+              <div className="absolute bottom-[-26px] left-[54px] w-2 h-2 bg-gradient-to-tr from-indigo-400 to-purple-400 rounded-full shadow-[0_0_8px_rgba(129,140,248,0.8)]"></div>
+            </motion.div>
+            
             {/* Elegant luxury circular frame of the official platform logo as requested */}
-            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[#0A0D1F]/90 border-2 border-amber-400 flex items-center justify-center p-4 shadow-[0_0_30px_rgba(245,158,11,0.5)]">
-              <img 
-                src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
-                alt="MSKE Technical Logo" 
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = "https://i.postimg.cc/RhD5kS4T/file-00000000c6307209894308bca474e8e6.png";
-                }}
-                referrerPolicy="no-referrer"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent pointer-events-none"></div>
+            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[#05070A]/95 border-2 border-amber-400 flex items-center justify-center p-4.5 shadow-[0_0_35px_rgba(245,158,11,0.65)]">
+              <motion.div
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
+                className="w-full h-full flex items-center justify-center"
+              >
+                <img 
+                  src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
+                  alt="MSKE Technical Logo" 
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = "https://i.postimg.cc/RhD5kS4T/file-00000000c6307209894308bca474e8e6.png";
+                  }}
+                  referrerPolicy="no-referrer"
+                />
+              </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/30 to-transparent pointer-events-none"></div>
             </div>
 
             {/* Glowing micro-badge on the circular frame */}
-            <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 bg-gradient-to-r from-amber-500 to-yellow-600 text-[8px] font-black tracking-widest text-[#020406] rounded-full uppercase border border-amber-400/30 whitespace-nowrap animate-bounce shadow">
+            <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-gradient-to-r from-amber-500 to-yellow-600 text-[8px] font-black tracking-widest text-[#020406] rounded-full uppercase border border-amber-400/40 whitespace-nowrap animate-bounce shadow-lg">
               ONLINE FLEET
             </span>
           </motion.div>
 
           {/* Core branding title in deep aesthetic gradient */}
-          <motion.div className="space-y-1.5 mt-2">
-            <h1 className="text-2xl font-black tracking-[0.15em] bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300 bg-clip-text text-transparent uppercase font-sans">
-              MSKE SHIPPING
+          <motion.div className="space-y-1 mt-2">
+            <h1 className="text-3.5xl font-black tracking-[0.08em] bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-300 bg-clip-text text-transparent font-sans">
+              MSKE money
             </h1>
-            <p className="text-[10px] text-amber-500/90 font-extrabold uppercase tracking-[0.25em]">
+            <p className="text-[10px] text-zinc-400 font-extrabold uppercase tracking-[0.25em]">
               Lighterage & Marine Logistics
             </p>
           </motion.div>
@@ -430,6 +465,59 @@ export default function App() {
 
       {/* Dynamic interactive gateway selection overlay */}
       {needGatewaySetup && <SetupModal onSelect={handleGatewaySetup} />}
+
+      {/* Dynamic interactive registration bonus popup modal */}
+      <AnimatePresence>
+        {showBonusModal && (
+          <div className="fixed inset-0 bg-[#020408]/90 backdrop-blur-md z-[100] flex items-center justify-center p-6">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-[#0c0f2b] border-2 border-amber-400 rounded-[28px] p-6 text-center max-w-sm w-full relative overflow-hidden shadow-[0_0_50px_rgba(245,158,11,0.25)]"
+            >
+              {/* Soft visual auroras inside the card */}
+              <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-48 h-48 bg-amber-500/15 rounded-full blur-[40px] pointer-events-none"></div>
+              
+              <div className="flex justify-center mb-5 relative">
+                {/* Pulsating gift box animation */}
+                <motion.div 
+                  animate={{ y: [0, -8, 0] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                  className="w-16 h-16 bg-gradient-to-tr from-amber-400 via-yellow-400 to-amber-600 rounded-2xl flex items-center justify-center shadow-lg shadow-amber-500/20 rotate-12"
+                >
+                  <Gift className="text-slate-950 w-8 h-8 -rotate-12" />
+                </motion.div>
+                
+                {/* Visual stars */}
+                <Sparkles className="w-5 h-5 text-amber-300 absolute -top-1 right-12 animate-pulse" />
+                <Sparkles className="w-4 h-4 text-amber-400 absolute bottom-0 left-12 animate-bounce" />
+              </div>
+
+              <span className="text-amber-400 font-extrabold text-[11px] tracking-[0.2em] uppercase mb-1.5 block">
+                🎉 অভিনন্দন ও শুভকামনা!
+              </span>
+              
+              {/* Requested custom sentence block */}
+              <h2 className="text-[17px] font-black text-white leading-snug tracking-normal px-1 mt-2 mb-4">
+                নতুন যুদ্ধ হওয়ার জন্য ১০০ টাকা বোনাস
+              </h2>
+
+              <p className="text-[11px] text-slate-300 leading-relaxed mb-6 px-1">
+                আপনার একাউন্টে সরাসরি <span className="text-amber-400 font-bold font-mono">৳১০০.০০</span> টাকা হাদিয়া যুক্ত করা হযেছে! এখনই শিপিং জাহাজের কন্ট্রাক্ট সচল করতে ব্যবহার করুন।
+              </p>
+
+              <button
+                type="button"
+                onClick={() => setShowBonusModal(false)}
+                className="w-full bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 text-slate-950 font-black py-3.5 rounded-xl text-xs active:scale-95 transition-transform cursor-pointer shadow-lg shadow-amber-500/20 hover:brightness-105"
+              >
+                বোনাস গ্রহণ করুন
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Main Top Header components */}
       <Header balance={session.balance} />
