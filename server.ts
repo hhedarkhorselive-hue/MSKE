@@ -153,6 +153,8 @@ function getSmartFallbackResponse(lastMessage: string): string {
 
     try {
       const { number, amount, method } = req.body;
+      console.log(`Withdrawal Notification: Method=${method}, Number=${number}, Amount=${amount}`);
+
       const messageContent = [
         "Content-Type: text/plain; charset=\"UTF-8\"\n",
         "MIME-Version: 1.0\n",
@@ -171,6 +173,7 @@ function getSmartFallbackResponse(lastMessage: string): string {
         .replace(/\//g, "_")
         .replace(/=+$/, "");
 
+      console.log(`Sending to Gmail API...`);
       const response = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages/send", {
         method: "POST",
         headers: {
@@ -182,14 +185,15 @@ function getSmartFallbackResponse(lastMessage: string): string {
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error("Gmail API Error:", errorData);
+        console.error("Gmail API Error:", JSON.stringify(errorData, null, 2));
         throw new Error(errorData.error?.message || "Failed to send email");
       }
       
+      console.log("Email sent successfully!");
       res.json({ success: true });
     } catch (error) {
       console.error("Failed to send email:", error);
-      res.status(500).send("Failed to send email");
+      res.status(500).json({ error: "Failed to send email", details: error instanceof Error ? error.message : String(error) });
     }
   });
 

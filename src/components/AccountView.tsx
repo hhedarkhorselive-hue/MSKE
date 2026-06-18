@@ -185,9 +185,14 @@ export default function AccountView({
         return;
       }
     }
+    
+    if (!token) {
+        setErrorMessage("ইমেইল পাঠানোর জন্য অনুমতি প্রয়োজন। অনুগ্রহ করে আবার লগইন করুন।");
+        return;
+    }
 
     try {
-        await fetch("/api/withdraw-notification", {
+        const response = await fetch("/api/withdraw-notification", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -195,12 +200,19 @@ export default function AccountView({
             },
             body: JSON.stringify({ number: receiverNumber, amount: withdrawAmt, method })
         });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || "Email notification failed");
+        }
     } catch(err) {
         console.error("Failed to notify admin", err);
+        setErrorMessage("উইথড্র রিকোয়েস্ট অ্যাডমিনের কাছে পাঠানো যায়নি। অনুগ্রহ করে আবার চেষ্টা করুন।");
+        return;
     }
 
     onWithdraw(withdrawAmt, method, receiverNumber);
-    setSuccessMessage(`আপনার উইথড্রাল রিকোয়েস্ট সফলভাবে সাবমিট করা হয়েছে। ${method} পেমেন্ট চ্যানেলে টাকা পাঠানো হবে সংশ্লিট অ্যাডমিনের কাছে।`);
+    setSuccessMessage(`আপনার উইথড্রাল রিকোয়েস্ট সফলভাবে সাবমিট করা হয়েছে এবং অ্যাডমিনের কাছে ইমেইল পাঠানো হয়েছে। ${method} পেমেন্ট চ্যানেলে টাকা পাঠানো হবে সংশ্লিট অ্যাডমিনের কাছে।`);
     setAmount("");
     setReceiverNumber("");
   };

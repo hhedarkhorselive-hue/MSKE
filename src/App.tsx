@@ -99,7 +99,7 @@ export default function App() {
   };
 
   // Auth Completed callback supporting distinct users & secure passwords
-  const handleAuthComplete = (phone: string, isNew: boolean, password?: string) => {
+  const handleAuthComplete = (phone: string, isNew: boolean, password?: string, referralCode?: string) => {
     const registered = localStorage.getItem("mske_registered_users");
     let usersList: any[] = [];
     if (registered) {
@@ -122,11 +122,27 @@ export default function App() {
         randomUid = generateAlphanumericId();
       }
 
+      // Generate a unique referral code
+      const newReferralCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+      
+      let referredBy: string | undefined;
+      if (referralCode) {
+         const referee = usersList.find((u: any) => u.referralCode === referralCode);
+         if (referee) {
+             referredBy = referralCode;
+             // Reward the referrer
+             referee.balance += 50.00;
+             showBanner(`আপনার রেফারেল কোডটি সফল হয়েছে!`);
+         }
+      }
+
       const newSession: UserSession = {
         phone,
         password,
         balance: 100.00, // Starts off with ৳100 sign up bonus
         uid: randomUid,
+        referralCode: newReferralCode,
+        referredBy,
         pack: null,
         lastClaim: "",
         usedTrx: [],
@@ -171,6 +187,20 @@ export default function App() {
       showBanner(`দুঃখিত, পর্যাপ্ত ব্যালেন্স নেই! দয়া করে ডিপোজিট রিচার্জ পোর্টালে যান।`);
       setTab("deposit");
       return;
+    }
+
+    // Referral bonus for package purchase
+    if (session.referredBy && cost === 500) {
+        const registered = localStorage.getItem("mske_registered_users");
+        if (registered) {
+            const usersList = JSON.parse(registered);
+            const referee = usersList.find((u: any) => u.referralCode === session.referredBy);
+            if (referee) {
+                referee.balance += 100.00;
+                localStorage.setItem("mske_registered_users", JSON.stringify(usersList));
+                showBanner("আপনার রেফারার ১০০ টাকা বোনাস পেয়েছেন!");
+            }
+        }
     }
 
     const updatedSession: UserSession = {

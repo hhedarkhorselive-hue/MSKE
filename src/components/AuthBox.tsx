@@ -16,7 +16,7 @@ import {
 } from "lucide-react";
 
 interface AuthBoxProps {
-  onAuthComplete: (phone: string, isNew: boolean, customPassword?: string) => void;
+  onAuthComplete: (phone: string, isNew: boolean, customPassword?: string, referralCode?: string) => void;
 }
 
 export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
@@ -24,6 +24,7 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
   const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [referralCode, setReferralCode] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -65,7 +66,7 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
     // Simulate database lookup latency
     setTimeout(() => {
       setIsLoading(false);
-      onAuthComplete(phone, !isLogin, password);
+      onAuthComplete(phone, !isLogin, password, referralCode);
     }, 800);
   };
 
@@ -401,7 +402,7 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
                       required 
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="w-full bg-[#020406]/90 border border-[#1e1f38]/60 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-amber-500 transition-all"
+                      className="w-full bg-[#020406]/90 border border-[#1e1f38]/60 rounded-xl p-3 pr-10 text-xs text-white focus:outline-none focus:border-amber-500 transition-all font-mono"
                     />
                     <button
                       type="button"
@@ -413,6 +414,22 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
                   </div>
                 </div>
 
+                {!isLogin && (
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-zinc-400 uppercase font-extrabold tracking-wider flex items-center">
+                      <Gift className="w-3.5 h-3.5 text-amber-500 mr-1.5 shrink-0" />
+                      Referral Code (Optional)
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="রেফার কোড দিন" 
+                      value={referralCode}
+                      onChange={(e) => setReferralCode(e.target.value)}
+                      className="w-full bg-[#020406]/90 border border-[#1e1f38]/60 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500 transition-all font-mono"
+                    />
+                  </div>
+                )}
+                
                 <button 
                   type="submit" 
                   disabled={isLoading}

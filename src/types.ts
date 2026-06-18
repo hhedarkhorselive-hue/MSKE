@@ -28,6 +28,8 @@ export interface UserSession {
   password?: string;
   balance: number;
   uid: string; // alphanumeric string
+  referralCode: string;
+  referredBy?: string;
   pack: UserPackage | null;
   lastClaim: string; // date string
   usedTrx: string[];

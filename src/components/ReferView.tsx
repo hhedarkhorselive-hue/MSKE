@@ -12,10 +12,9 @@ interface ReferViewProps {
 
 export default function ReferView({ uid }: ReferViewProps) {
   const [copied, setCopied] = useState<boolean>(false);
-  const referUrl = `mske.shipping.io/ref?id=${uid}`;
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(referUrl);
+    navigator.clipboard.writeText(uid);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -52,7 +51,7 @@ export default function ReferView({ uid }: ReferViewProps) {
         <div className="flex items-center space-x-2 overflow-hidden flex-1">
           <Share2 className="w-3.5 h-3.5 text-amber-500/80 shrink-0" />
           <span id="ref-link-lbl" className="font-mono text-[11px] text-amber-400 tracking-wide truncate">
-            {referUrl}
+            {uid}
           </span>
         </div>
         <button
