@@ -24,7 +24,9 @@ import {
   Lock,
   Globe,
   Check,
-  ExternalLink
+  ExternalLink,
+  Copy,
+  RefreshCw
 } from "lucide-react";
 import { generateIdAvatar } from "../utils/avatar";
 import { WithdrawalRequest } from "../types";
@@ -61,6 +63,10 @@ export default function AccountView({
   const [receiverNumber, setReceiverNumber] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
+  
+  // Custom interactive animations states
+  const [copiedUid, setCopiedUid] = useState<boolean>(false);
+  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
 
   // Premium settings states
   const [showPassForm, setShowPassForm] = useState<boolean>(false);
@@ -159,94 +165,123 @@ export default function AccountView({
             exit={{ opacity: 0, y: -10 }}
             className="space-y-4 pb-6"
           >
-            {/* Account Profile Header Card with Premium Cover Art */}
-            <div className="relative rounded-[32px] overflow-hidden border border-slate-800/80 shadow-2xl bg-[#020406]/95 backdrop-blur-md">
-              {/* Cover Banner Image with elegant depth */}
-              <div className="w-full h-36 relative overflow-hidden">
-                <img 
-                  src="https://i.postimg.cc/mrXB7f5k/1781727535216.png" 
-                  alt="MSKE Profile Theme Cover" 
-                  className="w-full h-full object-cover brightness-[0.75] contrast-[1.1]"
-                  referrerPolicy="no-referrer"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#020406] via-[#020406]/20 to-[#020406]/40"></div>
-              </div>
-
-              {/* Profile details container - offset to overlap the brand cover art banner */}
-              <div className="px-5 pb-5 -mt-12 relative z-10 flex flex-col items-center text-center space-y-3">
-                <div className="relative">
-                  {/* Glowing luxury golden halo behind user avatar */}
-                  <div className="absolute -inset-1.5 bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-600 rounded-full blur-[8px] opacity-80 animate-pulse"></div>
-                  <div className="relative w-22 h-22 rounded-full overflow-hidden border-4 border-[#020406] bg-[#020406] shadow-2xl flex items-center justify-center p-0.5">
+            {/* High-Fidelity Custom Yellow Profile & White Balance UI */}
+            <div className="w-full bg-[#f8cc1b] rounded-[24px] overflow-hidden shadow-xl relative text-slate-900">
+              {/* Profile Yellow Section */}
+              <div className="p-6 pb-14 text-white">
+                <div className="flex items-center gap-4.5">
+                  <div className="w-18 h-18 rounded-full overflow-hidden border-2 border-white/50 flex-shrink-0 shadow-md">
                     <img 
                       src={avatarUri} 
-                      alt="Verified User Avatar" 
-                      className="w-full h-full object-cover rounded-full" 
+                      alt="User Avatar" 
+                      className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
                   </div>
+                  <div className="flex flex-col gap-1.5 text-left">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-extrabold text-[15px] tracking-wide text-slate-950 uppercase">
+                        {phone}
+                      </span>
+                      <span className="bg-gradient-to-r from-slate-400 to-slate-500 text-white font-black text-[9px] px-2 py-0.5 rounded-full inline-flex items-center gap-1 border border-white/40 shadow-sm shadow-slate-950/20">
+                        ⭐ VIP0
+                      </span>
+                    </div>
+                    
+                    {/* Orange UID Capsule with Active Copy Logic */}
+                    <div 
+                      onClick={() => {
+                        navigator.clipboard.writeText(uid);
+                        setCopiedUid(true);
+                        setTimeout(() => setCopiedUid(false), 2000);
+                      }}
+                      className="bg-[#fca34d] px-3 py-1 rounded-full text-[11px] font-bold text-white flex items-center gap-1.5 w-fit cursor-pointer active:scale-95 transition-transform shadow-[0_2px_5px_rgba(252,163,77,0.3)] hover:brightness-105"
+                      title="ইউজার আইডি কপি করুন"
+                    >
+                      <span className="opacity-90 font-sans">UID</span>
+                      <span className="opacity-50">|</span>
+                      <span className="font-mono tracking-wider">{uid}</span>
+                      {copiedUid ? (
+                        <Check className="w-3 h-3 text-emerald-200 animate-pulse" />
+                      ) : (
+                        <Copy className="w-3 h-3 opacity-90" />
+                      )}
+                    </div>
+                    
+                    {/* Simulated and real Last Login Time */}
+                    <div className="text-[11px] text-zinc-900/80 font-medium">
+                      Last login: {new Date().toISOString().slice(0, 10)} {new Date().toTimeString().slice(0, 5)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* White Overlapping Balance Card */}
+              <div className="bg-white mx-3.5 mb-3.5 -mt-10 rounded-[20px] p-5 shadow-[0_4px_15px_rgba(0,0,0,0.08)] relative z-10 text-slate-800">
+                <div className="text-slate-400 text-xs font-bold font-sans tracking-wide uppercase">
+                  Total balance
+                </div>
+                <div className="flex items-center justify-between border-b border-slate-100 pb-4 mb-4 mt-1.5">
+                  <strong className="text-2xl font-black text-slate-950 tracking-tight font-sans">
+                    ৳ {balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  </strong>
+                  
+                  {/* Rotating Refresh Icon */}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (isRefreshing) return;
+                      setIsRefreshing(true);
+                      setTimeout(() => {
+                        setIsRefreshing(false);
+                      }, 1000);
+                    }}
+                    className="p-1 rounded-full hover:bg-slate-50 transition-colors cursor-pointer active:scale-90"
+                    title="ব্যালেন্স রিফ্রেশ করুন"
+                  >
+                    <RefreshCw className={`w-4.5 h-4.5 text-zinc-400 hover:text-amber-500 transition-colors ${isRefreshing ? "animate-spin text-amber-500" : ""}`} />
+                  </button>
                 </div>
 
-                <div className="space-y-1 bg-[#020406]/70 p-3 rounded-2.5xl border border-slate-800/60 backdrop-blur-md shadow-2xl max-w-[260px]">
-                  <div className="flex items-center justify-center space-x-2">
-                    <h3 id="user-phone" className="font-black text-base text-white tracking-widest font-sans">
-                      {phone}
-                    </h3>
-                    <span className="inline-flex items-center bg-gradient-to-r from-amber-500/20 to-yellow-500/20 text-amber-400 text-[9px] font-black px-2 py-0.5 rounded-full border border-amber-500/35 uppercase tracking-widest">
-                      <Award className="w-3 h-3 mr-0.5 text-amber-500" />
-                      VIP
+                {/* Highly Polished Action Grid for Deposit and Withdraw */}
+                <div className="grid grid-cols-2 text-center relative divide-x divide-slate-100">
+                  {/* Deposit trigger */}
+                  <div
+                    onClick={() => {
+                      setErrorMessage("");
+                      setSuccessMessage("");
+                      setActiveSubView("deposit");
+                    }}
+                    className="flex flex-col items-center gap-2 cursor-pointer group active:scale-95 transition-transform"
+                  >
+                    <div className="w-11 h-11 rounded-[14px] bg-[#ffe8d1] flex items-center justify-center shadow-sm group-hover:bg-[#ffd1a7] transition-colors relative">
+                      <span className="text-xl">💰</span>
+                      {/* CSS absolute orange dynamic marker inside the icon frame */}
+                      <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-orange-500 animate-ping" />
+                    </div>
+                    <span className="text-xs font-extrabold text-slate-800 group-hover:text-amber-600 transition-colors">
+                      Deposit / রিচার্জ
                     </span>
                   </div>
-                  <div className="text-[10px] text-slate-400 font-bold flex items-center justify-center space-x-1">
-                    <span>ইউজার আইডি:</span>
-                    <span id="user-uid" className="font-mono text-amber-400 tracking-wider select-all bg-slate-950/90 px-2 py-0.5 rounded border border-slate-800/80">{uid}</span>
+
+                  {/* Withdraw trigger */}
+                  <div
+                    onClick={() => {
+                      setErrorMessage("");
+                      setSuccessMessage("");
+                      setActiveSubView("withdraw");
+                    }}
+                    className="flex flex-col items-center gap-2 cursor-pointer group active:scale-95 transition-transform"
+                    style={{ borderLeftWidth: '1px' }}
+                  >
+                    <div className="w-11 h-11 rounded-[14px] bg-[#dbeafe] flex items-center justify-center shadow-sm group-hover:bg-[#b9d7fe] transition-colors relative">
+                      <span className="text-xl">💳</span>
+                    </div>
+                    <span className="text-xs font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">
+                      Withdraw / উত্তোলন
+                    </span>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Quick Balance Statistics Card */}
-            <div className="bg-[#020406]/90 p-5.5 rounded-[32px] border border-slate-800/80 shadow-xl text-center space-y-4 backdrop-blur-sm relative overflow-hidden">
-              <div className="absolute top-0 left-0 w-24 h-24 bg-amber-500/[0.03] rounded-full blur-2xl"></div>
-              
-              <div className="space-y-1 relative">
-                <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-widest block font-sans">
-                  আপনার অ্যাকাউন্টের মোট ব্যালেন্স
-                </span>
-                <strong className="text-3xl text-amber-400 tracking-tight font-sans block drop-shadow-[0_2px_15px_rgba(245,158,11,0.25)]">
-                  ৳ {balance.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </strong>
-              </div>
-
-              {/* Action Buttons for Deposit & Withdraw integrated explicitly side-by-side */}
-              <div className="grid grid-cols-2 gap-4 relative">
-                <button
-                  type="button"
-                  id="action-deposit-view"
-                  onClick={() => {
-                    setErrorMessage("");
-                    setSuccessMessage("");
-                    setActiveSubView("deposit");
-                  }}
-                  className="bg-gradient-to-r from-amber-500/[0.08] to-yellow-500/[0.08] hover:from-amber-500/15 hover:to-yellow-500/15 text-amber-400 border border-amber-500/35 font-extrabold py-3.5 rounded-2xl text-[11px] transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer active:scale-95 shadow-[0_4px_12px_rgba(245,158,11,0.05)]"
-                >
-                  <ArrowDownLeft className="w-4 h-4 text-amber-400 animate-pulse shrink-0" />
-                  <span>ব্যালেন্স ডিপোজিট</span>
-                </button>
-
-                <button
-                  type="button"
-                  id="action-withdraw-view"
-                  onClick={() => {
-                    setErrorMessage("");
-                    setSuccessMessage("");
-                    setActiveSubView("withdraw");
-                  }}
-                  className="bg-gradient-to-r from-amber-500 to-yellow-500 hover:brightness-105 hover:shadow-amber-500/25 text-slate-950 font-black py-3.5 rounded-2xl text-[11px] transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer active:scale-95 shadow-md shadow-amber-500/10 border-none"
-                >
-                  <ArrowUpRight className="w-4 h-4 text-slate-950 shrink-0" />
-                  <span>ফান্ড উইথড্রাল</span>
-                </button>
               </div>
             </div>
 

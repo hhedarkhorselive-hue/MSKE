@@ -320,13 +320,14 @@ export default function App() {
     }
 
     return (
-      <div className="min-h-screen bg-[#020406] text-slate-200 font-sans flex flex-col items-center justify-center max-w-md mx-auto relative overflow-hidden border-x border-slate-900 shadow-2xl">
-        {/* Soft, luxury ambient glow orbs */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 h-80 bg-amber-500/[0.15] blur-[110px] rounded-full pointer-events-none z-0"></div>
-        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-[#e0aa3e]/[0.08] blur-[110px] rounded-full pointer-events-none z-0"></div>
+      <div className="min-h-screen bg-gradient-to-tr from-[#080916] via-[#0D0F26] to-[#0A0D1F] text-slate-200 font-sans flex flex-col items-center justify-center max-w-md mx-auto relative overflow-hidden border-x border-[#1e1f38]/60 shadow-2xl">
+        {/* Soft, luxury ambient glow orbs - Google Gemini-inspired pink, indigo, and cyan neon auroras */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 h-80 bg-indigo-500/[0.14] blur-[110px] rounded-full pointer-events-none z-0"></div>
+        <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-violet-600/[0.12] blur-[110px] rounded-full pointer-events-none z-0"></div>
+        <div className="absolute bottom-1/4 left-1/3 w-72 h-72 bg-amber-500/[0.06] blur-[110px] rounded-full pointer-events-none z-0"></div>
 
         <div className="z-10 flex flex-col items-center space-y-7 text-center px-6">
-          {/* Stunning Spinning and Pulsing Logo Container WITH The Requested Girl Cover Image */}
+          {/* Stunning Spinning and Pulsing Logo Container WITH The Requested App Header Logo */}
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
@@ -343,24 +344,28 @@ export default function App() {
             <motion.div 
               animate={{ rotate: -360 }}
               transition={{ repeat: Infinity, duration: 15, ease: "linear" }}
-              className="absolute -inset-4 rounded-full border border-double border-amber-400/20"
+              className="absolute -inset-4 rounded-full border border-double border-indigo-400/20"
             />
             {/* Soft background pulse radial gradient */}
             <motion.div 
               animate={{ scale: [1, 1.15, 1], opacity: [0.2, 0.4, 0.2] }}
               transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-              className="absolute -inset-3 rounded-full bg-gradient-to-tr from-amber-500 to-yellow-500 opacity-25 blur-xl"
+              className="absolute -inset-3 rounded-full bg-gradient-to-tr from-indigo-500 to-amber-500 opacity-25 blur-xl"
             />
             
-            {/* Elegant luxury circular frame of the beautiful theme Girl as requested */}
-            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-slate-950/90 border-2 border-amber-400 flex items-center justify-center p-1 shadow-[0_0_30px_rgba(245,158,11,0.5)]">
+            {/* Elegant luxury circular frame of the official platform logo as requested */}
+            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[#0A0D1F]/90 border-2 border-amber-400 flex items-center justify-center p-4 shadow-[0_0_30px_rgba(245,158,11,0.5)]">
               <img 
-                src="https://i.postimg.cc/mrXB7f5k/1781727535216.png" 
-                alt="MSKE Theme Hero" 
-                className="w-full h-full object-cover rounded-full"
+                src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
+                alt="MSKE Technical Logo" 
+                className="w-full h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = "https://i.postimg.cc/RhD5kS4T/file-00000000c6307209894308bca474e8e6.png";
+                }}
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/40 to-transparent"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 to-transparent pointer-events-none"></div>
             </div>
 
             {/* Glowing micro-badge on the circular frame */}
@@ -400,7 +405,7 @@ export default function App() {
 
         {/* Brand systems verification tagline */}
         <div className="absolute bottom-8 left-0 right-0 text-center z-10">
-          <span className="text-[8px] font-mono tracking-widest text-slate-600 uppercase">
+          <span className="text-[8px] font-mono tracking-widest text-[#56598c] uppercase">
             SECURED BY MSKE SHIP-SYSTEMS
           </span>
         </div>
@@ -416,12 +421,12 @@ export default function App() {
   const needGatewaySetup = !session.selectedGateway;
 
   return (
-    <div id="main-applet" className="min-h-screen bg-[#020406] text-slate-200 font-sans flex flex-col justify-between max-w-md mx-auto relative shadow-2xl pb-24 overflow-hidden border-x border-slate-900">
-      {/* Premium Ambient Textures (Color Glow Orbs) as requested */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-amber-500/[0.08] blur-[110px] rounded-full pointer-events-none -mr-32 -mt-20 z-0 animate-pulse"></div>
-      <div className="absolute top-[30%] left-0 w-72 h-72 bg-purple-500/[0.06] blur-[110px] rounded-full pointer-events-none -ml-32 z-0"></div>
-      <div className="absolute bottom-[10%] right-0 w-80 h-80 bg-emerald-500/[0.06] blur-[115px] rounded-full pointer-events-none -mr-32 z-0"></div>
-      <div className="absolute bottom-10 left-0 w-72 h-72 bg-blue-500/[0.07] blur-[100px] rounded-full pointer-events-none -ml-28 z-0"></div>
+    <div id="main-applet" className="min-h-screen bg-gradient-to-b from-[#080916] via-[#0D0F26] to-[#080916] text-slate-200 font-sans flex flex-col justify-between max-w-md mx-auto relative shadow-2xl pb-24 overflow-hidden border-x border-[#1e1f38]/60">
+      {/* Premium Ambient Textures (Color Glow Orbs) as requested - Gemini Twilight Auroras */}
+      <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/[0.12] blur-[110px] rounded-full pointer-events-none -mr-32 -mt-20 z-0 animate-pulse"></div>
+      <div className="absolute top-[30%] left-0 w-72 h-72 bg-purple-500/[0.08] blur-[110px] rounded-full pointer-events-none -ml-32 z-0"></div>
+      <div className="absolute bottom-[10%] right-0 w-80 h-80 bg-indigo-600/[0.08] blur-[115px] rounded-full pointer-events-none -mr-32 z-0"></div>
+      <div className="absolute bottom-10 left-0 w-72 h-72 bg-blue-500/[0.10] blur-[100px] rounded-full pointer-events-none -ml-28 z-0"></div>
 
       {/* Dynamic interactive gateway selection overlay */}
       {needGatewaySetup && <SetupModal onSelect={handleGatewaySetup} />}

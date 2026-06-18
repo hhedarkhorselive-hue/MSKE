@@ -20,7 +20,7 @@ export default function Header({ balance }: HeaderProps) {
         <img 
           src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
           alt="MSKE Logo" 
-          className="h-10 w-auto object-contain"
+          className="h-13 w-auto object-contain"
           onError={(e) => {
             // Direct high status fallback just in case
             e.currentTarget.onerror = null;
