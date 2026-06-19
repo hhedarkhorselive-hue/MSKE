@@ -630,6 +630,7 @@ export default function AccountView({
             >
               অ্যাকাউন্ট থেকে লগআউট করুন
             </button>
+
           </motion.div>
         )}
 

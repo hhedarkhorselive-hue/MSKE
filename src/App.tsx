@@ -131,28 +131,24 @@ export default function App() {
       if (referralCode) {
          // Find referee document by referral code in Firestore
          const q = query(collection(db, "users"), where("referralCode", "==", referralCode.toUpperCase()));
-         let snapshot;
          try {
-             snapshot = await getDocs(q);
-         } catch (error) {
-             console.error("Firestore Error in referral query: ", error);
-             // handleFirestoreError is not available here, so just throw with context
-             throw new Error("referral_query_failed");
-         }
-         
-         if (!snapshot.empty) {
-             const refereeDoc = snapshot.docs[0];
-             referredBy = referralCode;
-             // Reward the referrer directly in Firestore
-             try {
-                await updateDoc(refereeDoc.ref, {
-                    balance: increment(50.00),
-                    referralCount: increment(1)
-                });
-             } catch (error) {
-                console.error("Firestore Error in updateDoc for referral: ", error);
+             const snapshot = await getDocs(q);
+             if (!snapshot.empty) {
+                 const refereeDoc = snapshot.docs[0];
+                 referredBy = referralCode;
+                 // Reward the referrer directly in Firestore
+                 try {
+                    await updateDoc(refereeDoc.ref, {
+                        balance: increment(50.00),
+                        referralCount: increment(1)
+                    });
+                    showBanner(`আপনার রেফারেল কোডটি সফল হয়েছে!`);
+                 } catch (error) {
+                    console.error("Firestore Error in updateDoc for referral: ", error);
+                 }
              }
-             showBanner(`আপনার রেফারেল কোডটি সফল হয়েছে!`);
+         } catch (error) {
+             console.error("Firestore Error in referral query (ignoring for registration): ", error);
          }
       }
 

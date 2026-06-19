@@ -11,6 +11,7 @@ import { GoogleGenAI } from "@google/genai";
 import dotenv from "dotenv";
 import dns from "dns";
 
+
 // Ensure Node.js prioritizes IPv4 resolution to prevent container "fetch failed" timeouts
 dns.setDefaultResultOrder("ipv4first");
 
@@ -21,12 +22,18 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
 
   // Setup JSON parsing middleware
   app.use(express.json());
+
+
+
+// ... rest of the file
 
 // Helper function to generate deep smart context-aware responses in Bengali/English when Gemini API limits/access issues occur
 function getSmartFallbackResponse(lastMessage: string): string {
