@@ -6,6 +6,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Compass, Coins, Sparkles, Users, User, ShieldAlert, Bot, HelpCircle, Anchor, Ship, Gift } from "lucide-react";
+import { doc, getDoc, setDoc, updateDoc, increment, collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "./lib/firebase";
 
 import { UserSession, WithdrawalRequest, DepositRequest } from "./types";
 import SetupModal from "./components/SetupModal";
@@ -99,7 +101,7 @@ export default function App() {
   };
 
   // Auth Completed callback supporting distinct users & secure passwords
-  const handleAuthComplete = (phone: string, isNew: boolean, password?: string, referralCode?: string) => {
+  const handleAuthComplete = async (phone: string, isNew: boolean, password?: string, referralCode?: string) => {
     const registered = localStorage.getItem("mske_registered_users");
     let usersList: any[] = [];
     if (registered) {
@@ -127,11 +129,17 @@ export default function App() {
       
       let referredBy: string | undefined;
       if (referralCode) {
-         const referee = usersList.find((u: any) => u.referralCode === referralCode);
-         if (referee) {
+         // Find referee document by referral code in Firestore
+         const q = query(collection(db, "users"), where("referralCode", "==", referralCode.toUpperCase()));
+         const snapshot = await getDocs(q);
+         if (!snapshot.empty) {
+             const refereeDoc = snapshot.docs[0];
              referredBy = referralCode;
-             // Reward the referrer
-             referee.balance += 50.00;
+             // Reward the referrer directly in Firestore
+             await updateDoc(refereeDoc.ref, {
+                 balance: increment(50.00),
+                 referralCount: increment(1)
+             });
              showBanner(`আপনার রেফারেল কোডটি সফল হয়েছে!`);
          }
       }
@@ -142,6 +150,7 @@ export default function App() {
         balance: 100.00, // Starts off with ৳100 sign up bonus
         uid: randomUid,
         referralCode: newReferralCode,
+        referralCount: 0,
         referredBy,
         pack: null,
         lastClaim: "",
@@ -317,7 +326,7 @@ export default function App() {
           />
         );
       case "refer":
-        return <ReferView uid={session.uid} />;
+        return <ReferView uid={session.uid} referralCount={session.referralCount || 0} />;
       case "deposit":
         return (
           <DepositView
@@ -326,6 +335,7 @@ export default function App() {
             onGatewaySelect={(gw) => updateSession({ ...session, selectedGateway: gw })}
             onDepositComplete={handleDepositComplete}
             usedTrx={session.usedTrx}
+            onBack={() => setTab("home")}
           />
         );
       case "account":

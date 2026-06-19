@@ -12,7 +12,8 @@ import {
   AlertCircle, 
   CheckCircle2, 
   Lock, 
-  HelpCircle 
+  HelpCircle,
+  Gift 
 } from "lucide-react";
 
 interface AuthBoxProps {

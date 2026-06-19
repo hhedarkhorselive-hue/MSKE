@@ -1,0 +1,29 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User account information including referral data and assets.",
+      "type": "object",
+      "properties": {
+        "phone": { "type": "string" },
+        "password": { "type": "string" },
+        "balance": { "type": "number" },
+        "uid": { "type": "string" },
+        "referralCode": { "type": "string" },
+        "referredBy": { "type": "string" },
+        "pack": { "type": "object" },
+        "lastClaim": { "type": "string" }
+      },
+      "required": ["phone", "uid", "referralCode", "balance"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profiles and account balances."
+    },
+    "/referralCodeToUid/{referralCode}": {
+      "description": "Mapping from referral code to user UID."
+    }
+  }
+}

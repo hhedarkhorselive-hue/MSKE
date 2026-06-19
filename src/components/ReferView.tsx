@@ -3,14 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Copy, Check, Users, Gift, Share2, Award } from "lucide-react";
+import { collection, query, where, getCountFromServer } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 interface ReferViewProps {
   uid: string;
+  referralCount?: number;
 }
 
-export default function ReferView({ uid }: ReferViewProps) {
+export default function ReferView({ uid, referralCount = 0 }: ReferViewProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
   const handleCopy = () => {
@@ -32,8 +35,13 @@ export default function ReferView({ uid }: ReferViewProps) {
         </p>
       </div>
 
-      {/* Rewards details list */}
-      <div className="grid grid-cols-2 gap-2 text-left pt-2 pb-1">
+      {/* Stats and Rewards */}
+      <div className="grid grid-cols-3 gap-2 text-left pt-2 pb-1">
+        <div className="p-3 bg-[#05070A]/50 rounded-2xl border border-slate-800 space-y-1">
+          <Users className="w-4 h-4 text-indigo-500" />
+          <span className="text-[10px] text-slate-400 block font-bold">মোট রেফার:</span>
+          <strong className="text-sm text-white font-mono">{referralCount}</strong>
+        </div>
         <div className="p-3 bg-[#05070A]/50 rounded-2xl border border-slate-800 space-y-1">
           <Gift className="w-4 h-4 text-amber-500" />
           <span className="text-[10px] text-slate-400 block font-bold">ইনস্ট্যান্ট বোনাস:</span>
@@ -41,8 +49,8 @@ export default function ReferView({ uid }: ReferViewProps) {
         </div>
         <div className="p-3 bg-[#05070A]/50 rounded-2xl border border-slate-800 space-y-1">
           <Award className="w-4 h-4 text-emerald-500" />
-          <span className="text-[10px] text-slate-400 block font-bold">ফ্লিট প্রফিট:</span>
-          <strong className="text-sm text-emerald-400 font-mono">৫% কমিশন</strong>
+          <span className="text-[10px] text-slate-400 block font-bold">ফ্লিট কমিশন:</span>
+          <strong className="text-sm text-emerald-400 font-mono">৫%</strong>
         </div>
       </div>
 

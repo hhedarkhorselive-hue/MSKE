@@ -31,6 +31,7 @@ const trxDatabase: Record<string, string[]> = {
 const WALLET_NUMBERS: Record<string, string> = {
   "Nagad": "01345632818",
   "bKash": "01333468617",
+  "Upay": "01855678912", // Added Upay number
 };
 
 interface DepositViewProps {
@@ -39,6 +40,7 @@ interface DepositViewProps {
   onGatewaySelect: (gateway: string) => void;
   onDepositComplete: (amount: number, trxId: string, gateway: string) => void;
   usedTrx: string[];
+  onBack: () => void;
 }
 
 export default function DepositView({
@@ -46,14 +48,15 @@ export default function DepositView({
   selectedGateway,
   onGatewaySelect,
   onDepositComplete,
-  usedTrx
+  usedTrx,
+  onBack
 }: DepositViewProps) {
   // Navigation states
   // screenStage: 1 = Main Select Page, 2 = Payment Details Page
   const [screenStage, setScreenStage] = useState<number>(1);
   
   // Selected billing details
-  const [rechargeChannel, setRechargeChannel] = useState<string>("OpPay-NAGAD");
+  const [rechargeChannel, setRechargeChannel] = useState<string>(`OpPay-${selectedGateway.toUpperCase()}`);
   const [depositAmount, setDepositAmount] = useState<number>(500);
   
   // Custom user parameters
@@ -71,6 +74,7 @@ export default function DepositView({
   const channelLogos: Record<string, string> = {
     "bKash": "https://i.postimg.cc/d0pWchyG/images-(16).jpg",
     "Nagad": "https://i.postimg.cc/L4zxG66m/unnamed.jpg",
+    "Upay": "https://i.postimg.cc/k4G6Pj8N/upay.png", // Using a placeholder for Upay
   };
 
   const channelsList = [
@@ -90,7 +94,7 @@ export default function DepositView({
   }, [selectedGateway]);
 
   const handleWalletCopy = () => {
-    const num = WALLET_NUMBERS[selectedGateway] || "01333468617";
+    const num = WALLET_NUMBERS[selectedGateway] || "01345632818";
     navigator.clipboard.writeText(num);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
@@ -168,11 +172,7 @@ export default function DepositView({
             <div className="bg-white px-4 py-3.5 flex items-center justify-between border-b border-gray-200">
               <button 
                 type="button" 
-                onClick={() => {
-                  // Direct clean fallback
-                  const backBtn = document.getElementById("profile-back-trigger");
-                  if (backBtn) backBtn.click();
-                }}
+                onClick={onBack}
                 className="text-gray-700 text-lg hover:bg-zinc-100 p-1.5 rounded-full transition-colors cursor-pointer"
                 title="ফিরে যান"
               >
@@ -205,73 +205,57 @@ export default function DepositView({
               </div>
             </div>
 
-            {/* Stage 1 Method Selector strip - Nagad, bKash */}
-            <div className="flex gap-4 px-6 mb-4.5 bg-white py-3 rounded-2xl mx-3 justify-center items-center">
+            {/* Stage 1 Method Selector strip - Nagad, bKash, Upay */}
+            <div className="flex gap-2 px-6 mb-4.5 bg-white py-3 rounded-2xl mx-3 justify-center items-center">
               
               {/* NAGAD SELECTION BUTTON */}
               <div 
                 onClick={() => onGatewaySelect("Nagad")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
                   selectedGateway === "Nagad" 
                     ? "bg-[#fcd435] border-[#fcd435] shadow-md" 
                     : "bg-white border-zinc-200 hover:border-amber-300"
                 }`}
               >
-                <div className="w-6 h-6 bg-[#f04e36] text-white rounded-full flex items-center justify-center text-[10px] font-black">
+                <div className="w-5 h-5 bg-[#f04e36] text-white rounded-full flex items-center justify-center text-[9px] font-black">
                   <span>N</span>
                 </div>
-                <span className={`text-xs font-extrabold ${selectedGateway === "Nagad" ? "text-slate-900" : "text-slate-700"}`}>Nagad</span>
+                <span className={`text-[10px] font-extrabold ${selectedGateway === "Nagad" ? "text-slate-900" : "text-slate-700"}`}>Nagad</span>
               </div>
 
               {/* BKASH SELECTION BUTTON */}
               <div 
                 onClick={() => onGatewaySelect("bKash")}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-300 ${
+                className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
                   selectedGateway === "bKash" 
                     ? "bg-[#e2136e] border-[#e2136e] shadow-md shadow-pink-500/10" 
                     : "bg-white border-zinc-200 hover:border-pink-300"
                 }`}
               >
-                <div className="w-6 h-6 bg-[#e2136e] rounded-full flex items-center justify-center text-white text-[8px] font-black">
-                  <span>bKash</span>
+                <div className="w-5 h-5 bg-[#e2136e] rounded-full flex items-center justify-center text-white text-[7px] font-black">
+                  <span>bK</span>
                 </div>
-                <span className={`text-xs font-extrabold ${selectedGateway === "bKash" ? "text-white" : "text-slate-700"}`}>bKash</span>
+                <span className={`text-[10px] font-extrabold ${selectedGateway === "bKash" ? "text-white" : "text-slate-700"}`}>bKash</span>
+              </div>
+
+              {/* UPAY SELECTION BUTTON */}
+              <div 
+                onClick={() => onGatewaySelect("Upay")}
+                className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
+                  selectedGateway === "Upay" 
+                    ? "bg-[#81cd3d] border-[#81cd3d] shadow-md shadow-green-500/10" 
+                    : "bg-white border-zinc-200 hover:border-green-300"
+                }`}
+              >
+                <div className="w-5 h-5 bg-[#81cd3d] rounded-full flex items-center justify-center text-white text-[8px] font-black">
+                  <span>Up</span>
+                </div>
+                <span className={`text-[10px] font-extrabold ${selectedGateway === "Upay" ? "text-white" : "text-slate-700"}`}>Upay</span>
               </div>
             </div>
 
-            {/* Core Channel & Package Grid card */}
+            {/* Core Package Grid card */}
             <div className="mx-3 p-4 bg-white rounded-2xl border border-zinc-200 shadow-sm mb-4">
-              <div className="flex items-center gap-2 mb-3 text-slate-800 font-extrabold text-[14px]">
-                <CreditCard className="w-4.5 h-4.5 text-[#fcd435]" />
-                <h2>Select channel (চ্যানেল সিলেক্ট করুন)</h2>
-              </div>
-
-              {/* Adaptive list of dynamic channels matching selected gateway */}
-              <div className="grid grid-cols-2 gap-2.5 mb-5.5">
-                {channelsList.map((ch) => {
-                  const isActive = rechargeChannel === ch.name;
-                  return (
-                    <div 
-                      key={ch.id}
-                      onClick={() => setRechargeChannel(ch.name)}
-                      className={`p-2.5 rounded-xl cursor-pointer border transition-all duration-200 flex items-center gap-2 ${
-                        isActive 
-                          ? "bg-[#fcd435] border-[#fcd435] text-slate-900 shadow-md" 
-                          : "bg-[#f8f9fa] border-zinc-100 hover:border-zinc-300 text-zinc-500"
-                      }`}
-                    >
-                      <img src={channelLogos[selectedGateway]} alt={selectedGateway} className="w-8 h-8 rounded-lg object-cover" referrerPolicy="no-referrer" />
-                      <div>
-                        <div className="text-[11.5px] font-black tracking-tight">{ch.name}</div>
-                        <div className={`text-[9px] mt-0.5 ${isActive ? "text-slate-800/90 font-bold" : "text-zinc-400"}`}>
-                          Amount: {ch.limit}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-
               {/* Dynamic packages/amount selection headers */}
               <div className="flex items-center gap-2 mb-3 text-slate-800 font-extrabold text-[14px]">
                 <Wallet className="w-4.5 h-4.5 text-[#fcd435]" />
@@ -302,8 +286,8 @@ export default function DepositView({
             {/* Bottom summary and Action proceeding trigger to screenStage 2 */}
             <div className="bg-white mx-3 p-3.5 rounded-2xl flex items-center justify-between shadow-sm border border-gray-200">
               <div>
-                <div className="text-[10px] text-gray-400 font-extrabold uppercase">Recharge Method:</div>
-                <div className="text-xs font-black text-slate-800">{rechargeChannel}</div>
+                <div className="text-[10px] text-gray-400 font-extrabold uppercase">Selected Amount:</div>
+                <div className="text-xs font-black text-slate-800">৳ {depositAmount.toLocaleString()}</div>
               </div>
               <button 
                 type="button"

@@ -25,13 +25,6 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       title: "এমএসকেএ শিপিং লজিস্টিকস লিমিটেড",
       desc: "সরাসরি মেরিন বাণিজ্যে অংশ নিয়ে প্রতিদিনের নিরাপদ মুনাফা সংগ্রহ করুন।"
     },
-    {
-      src: "https://i.postimg.cc/HxBkL8wD/file-00000000a2bc71faa50d7adae7d92d88.png",
-      alt: "MSKE Fleet",
-      badge: "ACTIVE FLEET",
-      title: "আমাদের সচল শক্তিশালী কার্গো জাহাজ",
-      desc: "আমরা অতিরিক্ত অবাস্তব লোভ দেখাই না, এটিই গ্রাহকদের সাথে বিশ্বাসের ভিত্তি।"
-    }
   ];
 
   useEffect(() => {
@@ -39,23 +32,16 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       setBannerIndex((prev) => (prev + 1) % bannerImages.length);
     }, 6000);
     return () => clearInterval(timer);
-  }, [bannerImages.length]);
+  }, []);
 
-  // Notice banners
-  const notices = [
-    "গ্রাহকদের জন্য বিশেষ ঘোষণা: সর্বনিম্ন উইথড্রাল লিমিট মাত্র ৪৫০ টাকা। আমাদের কাস্টমার হেল্পলাইন সেবা ২৪/৭ লাইভ আছে।",
-    "সতর্কতা: আমাদের অফিশিয়াল কাস্টমার সাপোর্ট হেল্পলাইন নাম্বার হলো ০৯৬৫৮৯৮৮১৪৫।",
-    "নতুন মেগা সুপার ক্যাটাগরি ভেসেলস লিজ সিস্টেমে যুক্ত করা হয়েছে।"
-  ];
-
-  const packages: ShipPackage[] = [
+  const packages = [
     {
       id: "ship_1",
       name: "কোস্টাল কার্গো ভেসেল (Coastal Cargo)",
       cost: 500,
-      dailyIncome: 20,
+      dailyIncome: 25,
       image: "https://i.postimg.cc/q70YZhyP/file-0000000058387207abcc303bd37095ad.png",
-      durationDays: 100,
+      durationDays: 365,
       category: "Coastal Carrier",
       capacity: "3,500 Tons",
       route: "Chittagong ⇄ Barisal"
@@ -66,7 +52,7 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       cost: 840,
       dailyIncome: 60,
       image: "https://i.postimg.cc/T3jNmdFH/copcall-ohsc068g.png",
-      durationDays: 90,
+      durationDays: 365,
       category: "Feeder Carrier",
       capacity: "5,800 Tons",
       route: "Chittagong ⇄ Pangaon"
@@ -75,9 +61,9 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       id: "ship_2",
       name: "ডিপ সি লাইনার কন্টেইনার (Deep Sea Liner)",
       cost: 1000,
-      dailyIncome: 110,
+      dailyIncome: 95,
       image: "https://i.postimg.cc/T3jNmdFH/copcall-ohsc068g.png",
-      durationDays: 90,
+      durationDays: 365,
       category: "Container Carrier",
       capacity: "12,000 TEU",
       route: "Chittagong ⇄ Singapore"
@@ -86,9 +72,9 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       id: "ship_3",
       name: "ওশান গেটওয়ে বাল্কার (Ocean Bulker)",
       cost: 2000,
-      dailyIncome: 180,
+      dailyIncome: 150,
       image: "https://i.postimg.cc/q70YZhyP/file-0000000058387207abcc303bd37095ad.png",
-      durationDays: 90,
+      durationDays: 365,
       category: "LNG Transporter",
       capacity: "85,000 CBM",
       route: "Mongla ⇄ Kuala Lumpur"
@@ -97,13 +83,19 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       id: "ship_4",
       name: "মেগা সুপার অয়েল ট্যাংকার (Oil VLCC)",
       cost: 5000,
-      dailyIncome: 250,
+      dailyIncome: 225,
       image: "https://i.postimg.cc/T3jNmdFH/copcall-ohsc068g.png",
-      durationDays: 90,
+      durationDays: 365,
       category: "A-Class VLCC Tanker",
       capacity: "150,000 DWT",
       route: "Matarbari ⇄ Persian Gulf"
     }
+  ];
+
+  const notices = [
+    "এমএসকেএ শিপিং লজিস্টিকস লিমিটেডে স্বাগতম! নিরাপদ বিনিয়োগ আমাদের প্রতিশ্রুতি।",
+    "নিয়মিত ভেসেল সার্ভিস ও পেমেন্ট রিসিভ করতে আপনার প্রোফাইল আপডেট রাখুন।",
+    "যেকোনো সমস্যায় আমাদের সাপোর্ট টিমের সাথে সরাসরি যোগাযোগ করুন।"
   ];
 
   return (
@@ -130,21 +122,7 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
                 current.src = "https://i.postimg.cc/Y9dJFrGH/file-00000000a2bc71faa50d7adae7d92d88.png";
               }}
             />
-            {/* Dark overlay for text readability only at the very bottom */}
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/95 via-slate-950/20 to-transparent"></div>
-            
-            <div className="absolute bottom-0 left-0 right-0 p-4 space-y-1">
-              <span className="inline-flex items-center px-2 py-0.5 rounded text-[8px] font-black bg-amber-500 text-slate-950 uppercase tracking-widest">
-                {bannerImages[bannerIndex].badge}
-              </span>
-              <h2 className="font-extrabold text-sm md:text-base text-white tracking-wide">
-                {bannerImages[bannerIndex].title}
-              </h2>
-              <p className="text-[10px] text-slate-300 line-clamp-1 flex items-center">
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-500 mr-1 flex-shrink-0" />
-                {bannerImages[bannerIndex].desc}
-              </p>
-            </div>
+            <div className="absolute inset-0"></div>
           </motion.div>
         </AnimatePresence>
 

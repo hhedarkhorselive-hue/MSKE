@@ -29,6 +29,7 @@ export interface UserSession {
   balance: number;
   uid: string; // alphanumeric string
   referralCode: string;
+  referralCount?: number;
   referredBy?: string;
   pack: UserPackage | null;
   lastClaim: string; // date string
