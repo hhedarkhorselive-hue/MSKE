@@ -19,12 +19,19 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
   // The banners list featuring user's official under-hero banner
   const bannerImages = [
     {
-      src: "https://i.postimg.cc/HxBkL8wD/file-00000000a2bc71faa50d7adae7d92d88.png",
-      alt: "এমএসকেএ শিপিং",
-      badge: "OFFICIAL SHIP LINE",
-      title: "এমএসকেএ শিপিং লজিস্টিকস লিমিটেড",
-      desc: "সরাসরি মেরিন বাণিজ্যে অংশ নিয়ে প্রতিদিনের নিরাপদ মুনাফা সংগ্রহ করুন।"
+      src: "https://i.postimg.cc/RhfCCrYW/file-000000000c187206935576bb3bf8764e.png",
+      alt: "MSKE Fleet 1",
+      badge: "COMMERCIAL FLEET",
+      title: "আমাদের আধুনিক কার্গো জাহাজ",
+      desc: "নিরাপদ বিনিয়োগ ও প্রতিদিনের মুনাফা নিশ্চিত।"
     },
+    {
+      src: "https://i.postimg.cc/NMcpCRw1/file-0000000098a47206a10c341f27045a51.png",
+      alt: "MSKE Fleet 2",
+      badge: "STRATEGIC ASSET",
+      title: "গ্লোবাল মেরিন ট্রেডিং সিস্টেম",
+      desc: "বিশ্বস্ত লজিস্টিক্সে বিনিয়োগ করুন আজই।"
+    }
   ];
 
   useEffect(() => {
@@ -101,7 +108,7 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
   return (
     <div className="space-y-4">
       {/* Premium Hero Slider Banner */}
-      <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-slate-800 shadow-xl group bg-slate-900">
+      <div className="relative w-full aspect-video rounded-2xl overflow-hidden border border-slate-200/60 shadow-lg group bg-white/40">
         <AnimatePresence mode="wait">
           <motion.div
             key={bannerIndex}
@@ -114,7 +121,7 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
              <img 
               src={bannerImages[bannerIndex].src} 
               alt={bannerImages[bannerIndex].alt} 
-              className="w-full h-full object-cover opacity-100"
+              className="w-full h-full object-contain opacity-100"
               referrerPolicy="no-referrer"
               onError={(e) => {
                 const current = e.currentTarget;
@@ -135,7 +142,7 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
               aria-label={`Slide ${idx + 1}`}
               onClick={() => setBannerIndex(idx)}
               className={`w-1.5 h-1.5 rounded-full transition-all ${
-                idx === bannerIndex ? "bg-amber-400 w-3" : "bg-slate-600"
+                idx === bannerIndex ? "bg-amber-600 w-3" : "bg-slate-400"
               }`}
             />
           ))}
@@ -143,12 +150,12 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
       </div>
 
       {/* Official Notice Ticker */}
-      <div className="bg-slate-900/40 border border-slate-800 rounded-2xl px-3.5 py-2.5 flex items-center space-x-3 overflow-hidden shadow-md">
-        <div className="w-6 h-6 bg-amber-500/10 text-amber-500 rounded-lg flex items-center justify-center flex-shrink-0 border border-amber-500/20">
+      <div className="bg-white/40 border border-slate-200/60 rounded-2xl px-3.5 py-2.5 flex items-center space-x-3 overflow-hidden shadow-sm">
+        <div className="w-6 h-6 bg-amber-500/20 text-amber-700 rounded-lg flex items-center justify-center flex-shrink-0 border border-amber-500/30">
           <BellRing className="w-3.5 h-3.5 animate-bounce" />
         </div>
         <div className="flex-1 overflow-hidden relative h-4">
-          <div className="animate-marquee whitespace-nowrap text-[11px] font-medium text-slate-300 absolute flex space-x-12">
+          <div className="animate-marquee whitespace-nowrap text-[11px] font-medium text-slate-700 absolute flex space-x-12">
             <span>{notices[0]}</span>
             <span>{notices[1]}</span>
             <span>{notices[2]}</span>
@@ -158,12 +165,12 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
 
       {/* Section Title */}
       <div className="flex items-center justify-between pt-1">
-        <h2 className="font-extrabold text-[11px] uppercase tracking-wider text-slate-400 flex items-center">
-          <Compass className="w-4 h-4 text-amber-500 mr-2 animate-spin-slow" />
+        <h2 className="font-extrabold text-[11px] uppercase tracking-wider text-slate-700 flex items-center">
+          <Compass className="w-4 h-4 text-amber-600 mr-2 animate-spin-slow" />
           একক বিনিয়োগ ভেসেল ফ্লিট সমূহ
         </h2>
-        <span className="text-[9px] bg-slate-900/60 text-slate-400 px-2.5 py-1 rounded-full border border-slate-800 font-bold flex items-center">
-          <Flame className="w-2.5 h-2.5 text-amber-500 mr-1" /> ACTIVE SHIPS
+        <span className="text-[9px] bg-white/60 text-slate-700 px-2.5 py-1 rounded-full border border-slate-200 font-bold flex items-center">
+          <Flame className="w-2.5 h-2.5 text-amber-600 mr-1" /> ACTIVE SHIPS
         </span>
       </div>
 
@@ -175,19 +182,19 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
             <motion.div
               key={pkg.id}
               whileHover={{ y: -3 }}
-              className={`bg-slate-900/45 border ${
-                isActive ? "border-amber-500 shadow-amber-500/10 shadow-xl" : "border-slate-800/80"
-              } rounded-[32px] p-5 space-y-4 flex flex-col shadow-lg hover:border-amber-500/40 transition-all group relative`}
+              className={`bg-white/40 border ${
+                isActive ? "border-amber-500 shadow-amber-500/20 shadow-xl" : "border-slate-200/80"
+              } rounded-[32px] p-5 space-y-4 flex flex-col shadow-sm hover:border-amber-400/60 transition-all group relative`}
             >
               {/* Product banner image box - fills edge-to-edge to fit border perfectly as requested */}
-              <div className="w-full h-44 rounded-[24px] overflow-hidden border border-slate-800 relative bg-[#05070A]/60 shadow-[inset_0_0_20px_rgba(0,0,0,0.8)]">
+              <div className="w-full h-44 rounded-[24px] overflow-hidden border border-slate-200 relative bg-white/60 shadow-[inset_0_0_20px_rgba(255,255,255,0.8)]">
                 <img 
                   src={pkg.image} 
                   alt={pkg.name} 
                   className="w-full h-full object-cover rounded-[24px] group-hover:scale-105 transition-all duration-500"
                   referrerPolicy="no-referrer"
                 />
-                <span className="absolute top-2.5 left-2.5 bg-slate-900/90 border border-slate-800 backdrop-blur-sm text-amber-400 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="absolute top-2.5 left-2.5 bg-white/90 border border-slate-200 backdrop-blur-sm text-amber-700 text-[8px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
                   {pkg.category}
                 </span>
               </div>
@@ -195,11 +202,11 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
               {/* Package Details Section */}
               <div className="space-y-3">
                 <div className="flex items-start justify-between">
-                  <h3 className="font-extrabold text-[12px] md:text-sm text-white group-hover:text-amber-400 transition-colors leading-tight">
+                  <h3 className="font-extrabold text-[12px] md:text-sm text-slate-900 group-hover:text-amber-700 transition-colors leading-tight">
                     {pkg.name}
                   </h3>
                   {isActive && (
-                    <span className="text-[8px] bg-gradient-to-tr from-amber-500 to-yellow-600 text-black font-black px-2 py-0.5 rounded shrink-0 ml-1.5 animate-pulse">
+                    <span className="text-[8px] bg-gradient-to-tr from-amber-400 to-yellow-500 text-slate-900 font-black px-2 py-0.5 rounded shrink-0 ml-1.5 animate-pulse">
                       ACTIVE PARTNER
                     </span>
                   )}
@@ -207,55 +214,55 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
 
                 {/* Ship specifications */}
                 {pkg.route && (
-                  <div className="grid grid-cols-2 gap-2 text-[9px] text-slate-400 border-t border-b border-slate-800/40 py-2">
+                  <div className="grid grid-cols-2 gap-2 text-[9px] text-slate-600 border-t border-b border-slate-200/80 py-2">
                     <div className="flex items-center space-x-1 flex-shrink-0">
-                      <Route className="w-3 h-3 text-amber-500/80 shrink-0" />
+                      <Route className="w-3 h-3 text-amber-600/80 shrink-0" />
                       <span className="truncate">{pkg.route}</span>
                     </div>
                     <div className="flex items-center space-x-1 flex-shrink-0">
-                      <Ship className="w-3 h-3 text-amber-500/80 shrink-0" />
+                      <Ship className="w-3 h-3 text-amber-600/80 shrink-0" />
                       <span className="truncate">{pkg.capacity || "15,000 DWT"}</span>
                     </div>
                   </div>
                 )}
 
                 {/* Pricing & yield information requested by user */}
-                <div className="grid grid-cols-3 gap-2 bg-[#020406]/90 p-3.5 rounded-2.5xl border border-slate-800/90 text-center relative overflow-hidden backdrop-blur-md">
+                <div className="grid grid-cols-3 gap-2 bg-white/60 p-3.5 rounded-2.5xl border border-slate-200 text-center relative overflow-hidden backdrop-blur-md">
                   <div className="space-y-1 flex flex-col items-center justify-between">
-                    <span className="text-[9px] font-extrabold text-slate-400 tracking-wide flex items-center justify-center">
-                      <Coins className="w-2.5 h-2.5 text-amber-500 mr-0.5" />
+                    <span className="text-[9px] font-extrabold text-slate-600 tracking-wide flex items-center justify-center">
+                      <Coins className="w-2.5 h-2.5 text-amber-600 mr-0.5" />
                       কেনার মূল্য
                     </span>
-                    <strong className="text-[13px] font-black text-amber-400 tracking-tight font-sans drop-shadow-[0_2px_10px_rgba(245,158,11,0.2)]">
+                    <strong className="text-[13px] font-black text-slate-900 tracking-tight font-sans drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]">
                       ৳ {pkg.cost.toLocaleString("en-US")}
                     </strong>
                   </div>
-                  <div className="space-y-1 flex flex-col items-center justify-between border-l border-r border-slate-800/80 px-1">
-                    <span className="text-[9px] font-extrabold text-slate-400 tracking-wide flex items-center justify-center">
-                      <TrendingUp className="w-2.5 h-2.5 text-emerald-400 mr-0.5" />
+                  <div className="space-y-1 flex flex-col items-center justify-between border-l border-r border-slate-200 px-1">
+                    <span className="text-[9px] font-extrabold text-slate-600 tracking-wide flex items-center justify-center">
+                      <TrendingUp className="w-2.5 h-2.5 text-emerald-600 mr-0.5" />
                       ডেইলি পাবে
                     </span>
-                    <strong className="text-[13px] font-black text-emerald-400 tracking-tight font-sans drop-shadow-[0_2px_10px_rgba(16,185,129,0.2)]">
+                    <strong className="text-[13px] font-black text-emerald-700 tracking-tight font-sans drop-shadow-[0_0_2px_rgba(255,255,255,0.8)]">
                       ৳ {pkg.dailyIncome.toLocaleString("en-US")}
                     </strong>
                   </div>
                   <div className="space-y-1 flex flex-col items-center justify-between">
-                    <span className="text-[9px] font-extrabold text-slate-400 tracking-wide flex items-center justify-center">
-                      <CalendarDays className="w-2.5 h-2.5 text-blue-400 mr-0.5" />
+                    <span className="text-[9px] font-extrabold text-slate-600 tracking-wide flex items-center justify-center">
+                      <CalendarDays className="w-2.5 h-2.5 text-blue-600 mr-0.5" />
                       মেয়াদকাল
                     </span>
-                    <strong className="text-[12px] font-extrabold text-slate-200 tracking-tight font-sans">
+                    <strong className="text-[12px] font-extrabold text-slate-800 tracking-tight font-sans">
                       {pkg.durationDays} দিন
                     </strong>
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-amber-500/[0.05] to-yellow-500/[0.05] p-2.5 rounded-xl border border-amber-500/20 flex items-center justify-between text-[11px] backdrop-blur-sm shadow-[0_4px_15px_rgba(245,158,11,0.03)]">
-                  <span className="text-slate-300 font-bold flex items-center">
-                    <Award className="w-3.5 h-3.5 text-amber-500 mr-1.5 shrink-0" />
+                <div className="bg-gradient-to-r from-amber-500/[0.1] to-yellow-500/[0.1] p-2.5 rounded-xl border border-amber-500/20 flex items-center justify-between text-[11px] backdrop-blur-sm shadow-[0_4px_15px_rgba(255,255,255,0.1)]">
+                  <span className="text-slate-800 font-bold flex items-center">
+                    <Award className="w-3.5 h-3.5 text-amber-600 mr-1.5 shrink-0" />
                     সর্বমোট রিটার্ন প্রফিট লাভ:
                   </span>
-                  <strong className="text-[13px] font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-yellow-500 to-amber-300 drop-shadow-[0_2px_8px_rgba(245,158,11,0.2)]">
+                  <strong className="text-[13px] font-black tracking-tight text-slate-900">
                     ৳ {(pkg.dailyIncome * pkg.durationDays).toLocaleString("en-US")}
                   </strong>
                 </div>
@@ -264,10 +271,10 @@ export default function HomeView({ onBuyPackage, activePackage }: HomeViewProps)
                   type="button"
                   id={`buy-ship-${pkg.cost}`}
                   onClick={() => onBuyPackage(pkg.cost, pkg.dailyIncome)}
-                  className={`w-full py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer shadow-md ${
+                  className={`w-full py-3.5 rounded-2xl text-[11px] font-black uppercase tracking-wider transition-all duration-300 flex items-center justify-center space-x-2 cursor-pointer shadow-sm ${
                     isActive
                       ? "bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-black shadow-lg shadow-amber-500/20 scale-102 border-none"
-                      : "bg-[#020406]/90 text-slate-200 border border-slate-800/90 group-hover:bg-gradient-to-r group-hover:from-amber-500 group-hover:to-yellow-500 group-hover:text-slate-950 group-hover:border-transparent active:scale-98"
+                      : "bg-stone-900 text-stone-50 border-none group-hover:bg-gradient-to-r group-hover:from-amber-600 group-hover:to-yellow-600 group-hover:text-white active:scale-98"
                   }`}
                 >
                   {isActive ? (

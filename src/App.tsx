@@ -131,15 +131,27 @@ export default function App() {
       if (referralCode) {
          // Find referee document by referral code in Firestore
          const q = query(collection(db, "users"), where("referralCode", "==", referralCode.toUpperCase()));
-         const snapshot = await getDocs(q);
+         let snapshot;
+         try {
+             snapshot = await getDocs(q);
+         } catch (error) {
+             console.error("Firestore Error in referral query: ", error);
+             // handleFirestoreError is not available here, so just throw with context
+             throw new Error("referral_query_failed");
+         }
+         
          if (!snapshot.empty) {
              const refereeDoc = snapshot.docs[0];
              referredBy = referralCode;
              // Reward the referrer directly in Firestore
-             await updateDoc(refereeDoc.ref, {
-                 balance: increment(50.00),
-                 referralCount: increment(1)
-             });
+             try {
+                await updateDoc(refereeDoc.ref, {
+                    balance: increment(50.00),
+                    referralCount: increment(1)
+                });
+             } catch (error) {
+                console.error("Firestore Error in updateDoc for referral: ", error);
+             }
              showBanner(`আপনার রেফারেল কোডটি সফল হয়েছে!`);
          }
       }
@@ -373,7 +385,7 @@ export default function App() {
     }
 
     return (
-      <div className="min-h-screen bg-gradient-to-tr from-[#080916] via-[#0D0F26] to-[#0A0D1F] text-slate-200 font-sans flex flex-col items-center justify-center max-w-md mx-auto relative overflow-hidden border-x border-[#1e1f38]/60 shadow-2xl">
+      <div className="min-h-screen text-slate-900 font-sans flex flex-col items-center justify-center max-w-md mx-auto relative overflow-hidden border-x border-slate-300/60 shadow-2xl">
         {/* Soft, luxury ambient glow orbs - Google Gemini-inspired pink, indigo, and cyan neon auroras */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-80 h-80 bg-indigo-500/[0.14] blur-[110px] rounded-full pointer-events-none z-0"></div>
         <div className="absolute top-1/3 left-1/3 w-72 h-72 bg-violet-600/[0.12] blur-[110px] rounded-full pointer-events-none z-0"></div>
@@ -423,19 +435,19 @@ export default function App() {
             </motion.div>
             
             {/* Elegant luxury circular frame of the official platform logo as requested */}
-            <div className="relative w-32 h-32 rounded-full overflow-hidden bg-[#05070A]/95 border-2 border-amber-400 flex items-center justify-center p-4.5 shadow-[0_0_35px_rgba(245,158,11,0.65)]">
+            <div className="relative w-40 h-40 rounded-full overflow-hidden bg-[#05070A]/95 border-2 border-amber-400 flex items-center justify-center p-4.5 shadow-[0_0_35px_rgba(245,158,11,0.65)]">
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
                 className="w-full h-full flex items-center justify-center"
               >
                 <img 
-                  src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
+                  src="https://i.postimg.cc/X7kLXrdf/1000030658-removebg-preview.png" 
                   alt="MSKE Technical Logo" 
                   className="w-full h-full object-contain"
                   onError={(e) => {
                     e.currentTarget.onerror = null;
-                    e.currentTarget.src = "https://i.postimg.cc/RhD5kS4T/file-00000000c6307209894308bca474e8e6.png";
+                    e.currentTarget.src = "https://i.postimg.cc/X7kLXrdf/1000030658-removebg-preview.png";
                   }}
                   referrerPolicy="no-referrer"
                 />
@@ -496,7 +508,7 @@ export default function App() {
   const needGatewaySetup = !session.selectedGateway;
 
   return (
-    <div id="main-applet" className="min-h-screen bg-gradient-to-b from-[#080916] via-[#0D0F26] to-[#080916] text-slate-200 font-sans flex flex-col justify-between max-w-md mx-auto relative shadow-2xl pb-24 overflow-hidden border-x border-[#1e1f38]/60">
+    <div id="main-applet" className="min-h-screen text-slate-900 font-sans flex flex-col justify-between max-w-md mx-auto relative shadow-2xl pb-24 overflow-hidden border-x border-slate-300/60">
       {/* Premium Ambient Textures (Color Glow Orbs) as requested - Gemini Twilight Auroras */}
       <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/[0.12] blur-[110px] rounded-full pointer-events-none -mr-32 -mt-20 z-0 animate-pulse"></div>
       <div className="absolute top-[30%] left-0 w-72 h-72 bg-purple-500/[0.08] blur-[110px] rounded-full pointer-events-none -ml-32 z-0"></div>
@@ -592,7 +604,7 @@ export default function App() {
       </main>
 
       {/* Sticky Bottom Premium Navigation Grid (Streamlined to 4 columns) */}
-      <nav id="bottom-bar-nav" className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-[#05070A]/95 backdrop-blur-md border-t border-slate-800/80 py-2.5 px-3 grid grid-cols-4 gap-1 z-40 shadow-2xl">
+      <nav id="bottom-bar-nav" className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-black/95 backdrop-blur-md border-t border-black/80 py-2.5 px-3 grid grid-cols-4 gap-1 z-40 shadow-2xl">
         <button
           type="button"
           id="btn-tab-home"

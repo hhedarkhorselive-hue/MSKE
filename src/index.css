@@ -22,8 +22,16 @@
 }
 
 body {
-  background-color: #080916;
-  color: #e2e8f0;
+  background: linear-gradient(
+    180deg,
+    #ff8080 0%,
+    #ffb488 25%,
+    #fffa9c 50%,
+    #a2f2ff 75%,
+    #66e0ff 100%
+  );
+  color: #1e293b;
+  min-height: 100vh;
   margin: 0;
   font-family: var(--font-sans);
 }

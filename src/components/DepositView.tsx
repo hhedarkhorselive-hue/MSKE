@@ -156,7 +156,7 @@ export default function DepositView({
   };
 
   return (
-    <div id="unified-deposit-wrapper" className="min-h-screen max-w-md mx-auto w-full bg-[#f4f5f7] text-slate-800">
+    <div id="unified-deposit-wrapper" className="min-h-screen max-w-md mx-auto w-full bg-white/30 text-zinc-900">
       <AnimatePresence mode="wait">
         
         {/* STAGE 1: DEPOSIT CHANNELS & AMOUNTS SELECTION */}
@@ -166,41 +166,41 @@ export default function DepositView({
             initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.98 }}
-            className="flex flex-col h-full bg-[#f4f5f7] pb-5"
+            className="flex flex-col h-full bg-white/30 pb-5"
           >
             {/* Header section styled match user's custom HTML snippet */}
-            <div className="bg-white px-4 py-3.5 flex items-center justify-between border-b border-gray-200">
+            <div className="bg-white/70 backdrop-blur-sm px-4 py-3.5 flex items-center justify-between border-b border-white/60">
               <button 
                 type="button" 
                 onClick={onBack}
-                className="text-gray-700 text-lg hover:bg-zinc-100 p-1.5 rounded-full transition-colors cursor-pointer"
+                className="text-zinc-700 text-lg hover:bg-white/50 p-1.5 rounded-full transition-colors cursor-pointer"
                 title="ফিরে যান"
               >
-                <ChevronLeft className="w-5 h-5 text-gray-800" />
+                <ChevronLeft className="w-5 h-5 text-zinc-900" />
               </button>
-              <h1 className="text-[17px] font-bold text-slate-800">Deposit Money</h1>
-              <span className="text-xs font-semibold text-amber-500 bg-amber-500/10 px-2.5 py-1 rounded-full">
+              <h1 className="text-[17px] font-bold text-zinc-900">Deposit Money</h1>
+              <span className="text-xs font-semibold text-amber-700 bg-amber-500/10 px-2.5 py-1 rounded-full">
                 Safe Channel
               </span>
             </div>
 
             {/* Glowing Golden balance box matching exactly BDT 0.68 mockup styling */}
-            <div className="m-3 p-5 bg-gradient-to-r from-[#fcd435] to-[#f59e0b] rounded-[24px] relative overflow-hidden shadow-md text-white">
+            <div className="m-3 p-5 bg-gradient-to-r from-[#fcd435] to-[#f59e0b] rounded-[24px] relative overflow-hidden shadow-md text-zinc-900">
               <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full pointer-events-none"></div>
               <div className="absolute -right-5 -top-5 w-24 h-24 bg-white/10 rounded-full pointer-events-none"></div>
               
-              <div className="flex items-center gap-1.5 text-white/95 text-xs font-extrabold uppercase tracking-wider mb-1">
+              <div className="flex items-center gap-1.5 text-zinc-900/95 text-xs font-extrabold uppercase tracking-wider mb-1">
                 <Wallet className="w-3.5 h-3.5" />
                 Current Wallet Balance
               </div>
-              <div className="flex items-center gap-3 text-white font-black text-3.5xl">
+              <div className="flex items-center gap-3 text-zinc-950 font-black text-3.5xl">
                 <span className="font-sans">৳ {balance.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
                 <button 
                   type="button" 
                   onClick={handleManualBalanceRefresh}
-                  className={`text-lg text-white/80 hover:text-white transition-all cursor-pointer p-1 rounded-full hover:bg-white/10 ${isRotating ? "rotate-180" : ""}`}
+                  className={`text-lg text-zinc-900/80 hover:text-zinc-900 transition-all cursor-pointer p-1 rounded-full hover:bg-black/5 ${isRotating ? "rotate-180" : ""}`}
                 >
-                  <RotateCw className="w-5 h-5 text-white" />
+                  <RotateCw className="w-5 h-5 text-zinc-900" />
                 </button>
               </div>
             </div>
@@ -214,7 +214,7 @@ export default function DepositView({
                 className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
                   selectedGateway === "Nagad" 
                     ? "bg-[#fcd435] border-[#fcd435] shadow-md" 
-                    : "bg-white border-zinc-200 hover:border-amber-300"
+                    : "bg-white/70 border-white hover:border-amber-300"
                 }`}
               >
                 <div className="w-5 h-5 bg-[#f04e36] text-white rounded-full flex items-center justify-center text-[9px] font-black">
@@ -229,7 +229,7 @@ export default function DepositView({
                 className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
                   selectedGateway === "bKash" 
                     ? "bg-[#e2136e] border-[#e2136e] shadow-md shadow-pink-500/10" 
-                    : "bg-white border-zinc-200 hover:border-pink-300"
+                    : "bg-white/70 border-white hover:border-pink-300"
                 }`}
               >
                 <div className="w-5 h-5 bg-[#e2136e] rounded-full flex items-center justify-center text-white text-[7px] font-black">
@@ -244,7 +244,7 @@ export default function DepositView({
                 className={`flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 ${
                   selectedGateway === "Upay" 
                     ? "bg-[#81cd3d] border-[#81cd3d] shadow-md shadow-green-500/10" 
-                    : "bg-white border-zinc-200 hover:border-green-300"
+                    : "bg-white/70 border-white hover:border-green-300"
                 }`}
               >
                 <div className="w-5 h-5 bg-[#81cd3d] rounded-full flex items-center justify-center text-white text-[8px] font-black">
@@ -255,10 +255,10 @@ export default function DepositView({
             </div>
 
             {/* Core Package Grid card */}
-            <div className="mx-3 p-4 bg-white rounded-2xl border border-zinc-200 shadow-sm mb-4">
+            <div className="mx-3 p-4 bg-white/60 backdrop-blur-sm rounded-2xl border border-white/60 shadow-sm mb-4">
               {/* Dynamic packages/amount selection headers */}
-              <div className="flex items-center gap-2 mb-3 text-slate-800 font-extrabold text-[14px]">
-                <Wallet className="w-4.5 h-4.5 text-[#fcd435]" />
+              <div className="flex items-center gap-2 mb-3 text-zinc-900 font-extrabold text-[14px]">
+                <Wallet className="w-4.5 h-4.5 text-amber-600" />
                 <h2>Deposit Amount (টাকার পরিমাণ সিলেক্ট করুন)</h2>
               </div>
 
@@ -272,11 +272,11 @@ export default function DepositView({
                       onClick={() => setDepositAmount(val)}
                       className={`border text-center py-2.5 rounded-xl text-xs font-black cursor-pointer transition-all ${
                         isSelected 
-                          ? "bg-amber-100 border-[#fcd435] text-[#fcd435] shadow-inner scale-102"
-                          : "border-gray-200 text-slate-800 bg-white hover:bg-slate-50"
+                          ? "bg-amber-100 border-amber-400 text-amber-700 shadow-inner scale-102"
+                          : "border-white/50 text-zinc-800 bg-white/70 hover:bg-white"
                       }`}
                     >
-                      ৳ <span className="font-sans font-black text-slate-900 text-xs ml-0.5">{val.toLocaleString("en-US")}</span>
+                      ৳ <span className="font-sans font-black text-zinc-950 text-xs ml-0.5">{val.toLocaleString("en-US")}</span>
                     </div>
                   );
                 })}
@@ -284,15 +284,15 @@ export default function DepositView({
             </div>
 
             {/* Bottom summary and Action proceeding trigger to screenStage 2 */}
-            <div className="bg-white mx-3 p-3.5 rounded-2xl flex items-center justify-between shadow-sm border border-gray-200">
+            <div className="bg-white/60 backdrop-blur-sm mx-3 p-3.5 rounded-2xl flex items-center justify-between shadow-sm border border-white/60">
               <div>
-                <div className="text-[10px] text-gray-400 font-extrabold uppercase">Selected Amount:</div>
-                <div className="text-xs font-black text-slate-800">৳ {depositAmount.toLocaleString()}</div>
+                <div className="text-[10px] text-zinc-500 font-extrabold uppercase">Selected Amount:</div>
+                <div className="text-xs font-black text-zinc-900">৳ {depositAmount.toLocaleString()}</div>
               </div>
               <button 
                 type="button"
                 onClick={handleProceedToPayment}
-                className="bg-amber-500 hover:bg-amber-600 text-slate-950 font-black px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/10"
+                className="bg-amber-500 hover:bg-amber-600 text-zinc-950 font-black px-6 py-2.5 rounded-xl text-xs transition-all cursor-pointer active:scale-95 shadow-md shadow-amber-500/10"
               >
                 টাকা জমা দিন (Deposit)
               </button>

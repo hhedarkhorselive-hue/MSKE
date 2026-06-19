@@ -14,17 +14,17 @@ export default function Header({ balance }: HeaderProps) {
   const [showBalance, setShowBalance] = useState<boolean>(false);
 
   return (
-    <header className="bg-[#05070A]/90 backdrop-blur-md px-4 py-3 sticky top-0 flex justify-between items-center border-b border-slate-800/80 z-40 shadow-xl">
+    <header className="bg-black/95 backdrop-blur-md px-4 py-3 sticky top-0 flex justify-between items-center border-b border-black/80 z-40 shadow-sm">
       {/* Platform Logo branding using user link - name text removed as requested, raw without border */}
       <div className="flex items-center">
         <img 
-          src="https://i.postimg.cc/3wZKL0fz/file-00000000c6307209894308bca474e8e6.png" 
+          src="https://i.postimg.cc/X7kLXrdf/1000030658-removebg-preview.png" 
           alt="MSKE Logo" 
-          className="h-13 w-auto object-contain"
+          className="h-16 w-auto object-contain"
           onError={(e) => {
             // Direct high status fallback just in case
             e.currentTarget.onerror = null;
-            e.currentTarget.src = "https://i.postimg.cc/RhD5kS4T/file-00000000c6307209894308bca474e8e6.png";
+            e.currentTarget.src = "https://i.postimg.cc/X7kLXrdf/1000030658-removebg-preview.png";
           }}
           referrerPolicy="no-referrer"
         />

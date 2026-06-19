@@ -25,6 +25,7 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
   const [isForgotPassword, setIsForgotPassword] = useState<boolean>(false);
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [referralCode, setReferralCode] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -59,6 +60,11 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
 
     if (!password || password.length < 4) {
       setErrorMessage("পাসওয়ার্ডটি ন্যূনতম ৪টি অক্ষরের হতে হবে।");
+      return;
+    }
+
+    if (!isLogin && password !== confirmPassword) {
+      setErrorMessage("পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না।");
       return;
     }
 
@@ -414,6 +420,23 @@ export default function AuthBox({ onAuthComplete }: AuthBoxProps) {
                     </button>
                   </div>
                 </div>
+
+                {!isLogin && (
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] text-zinc-400 uppercase font-extrabold tracking-wider flex items-center">
+                      <KeyRound className="w-3.5 h-3.5 text-amber-500 mr-1.5 shrink-0" />
+                      Confirm Password
+                    </label>
+                    <input 
+                      type="password" 
+                      placeholder="পাসওয়ার্ডটি পুনরায় দিন" 
+                      required 
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      className="w-full bg-[#020406]/90 border border-[#1e1f38]/60 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-amber-500 transition-all font-mono"
+                    />
+                  </div>
+                )}
 
                 {!isLogin && (
                   <div className="space-y-1.5">
